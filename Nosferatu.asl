@@ -1,8 +1,8 @@
 state("Nosferatu")
 {
-	byte inCutscene			  : 0x145D08, 0x504; 
-	byte isPaused				  : 0x14BF68, 0x1568;
-	float timer						: 0x14BF70;
+	byte inCutscene			: 0x145D08, 0x504; 
+	byte isPaused			: 0x14BF68, 0x1568;
+	float timer				: 0x14BF70;
 	string32 eventString	: 0x14D0A0; 
 	string32 eventString2	: 0x14CC7C;
 }
