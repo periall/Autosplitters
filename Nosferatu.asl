@@ -1,10 +1,34 @@
-state("Nosferatu")
+state("Nosferatu", "Res Fix")
 {
 	byte inCutscene         : 0x145D08, 0x504; 
 	byte isPaused           : 0x14BF68, 0x1568;
 	float timer             : 0x14BF70;
 	string32 eventString	: 0x14D0A0; 
 	string32 eventString2	: 0x14CC7C;
+}
+
+state("Nosferatu", "Steam")
+{
+	byte inCutscene         : 0x143900, 0x504; 
+	byte isPaused           : 0x149B50, 0x1568;
+	float timer             : 0x149B58;
+	string32 eventString	: 0x14AC70;
+	string32 eventString2	: 0x14A850;
+}
+
+init
+{
+	switch (modules.First().ModuleMemorySize) {
+		case  1409024: version = "Res Fix";
+			vars.keybase = 0x141A40;		
+			break;
+		case    1429504: version = "Steam";
+			vars.keybase = 0x13FA78;
+			break;
+		default:        version = "Unknown"; 
+			break;
+    }
+    vars.keybase = (IntPtr)((long)modules.First().BaseAddress + vars.keybase);
 }
 
 startup 
@@ -76,7 +100,7 @@ split
 {
 	var ItemCheck = (Func<string, int, byte>)(( itemname, offset ) => {	
 		IntPtr itembaseaddr = IntPtr.Zero;
-		new DeepPointer(0x141A40, 0x4, offset, -1).DerefOffsets(game, out itembaseaddr);		
+		new DeepPointer(vars.keybase, 0x4, offset, -1).DerefOffsets(game, out itembaseaddr);		
 	
 	if ( !vars.doneSplits.Contains(itemname) && settings[itemname] == true )
 	{			
@@ -89,9 +113,7 @@ split
 	else return 0;		
 	});
 
-	foreach(var s in vars.sB) {
-		if ( s.Item3 != "split_keys" ) continue;
-
+	foreach(var s in vars.sB) {	
 		if ( ItemCheck(s.Item1, s.Item5) == 1 )
 			return true;
 	}
